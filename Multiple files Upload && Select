@@ -1,0 +1,94 @@
+<?php
+
+    $books = array('book','physics','chemistry','biology','english','mathematics');
+
+    function selectBook($options,$selectedValue){
+        foreach ($options as $option){
+            $selectText= " ";
+            if (in_array($option,$selectedValue)){
+                $selectText = "selected";
+            }
+            printf("<option value='%s' %s> %s </option>",$option,$selectText,ucfirst($option));
+        }
+    }
+
+    if(isset($_FILES['photo'])){
+
+        $file_types = array('image/jpg','image/png','image/jpeg');
+
+        $totalfiles =  count($_FILES['photo']['name']);
+
+        for ($i=0;$i<$totalfiles;$i++){
+            if (in_array($_FILES['photo']['type'][$i],$file_types)){
+                move_uploaded_file($_FILES['photo']['tmp_name'][$i],"assets/upload/".$_FILES['photo']['name'][$i]);
+            }else{
+                echo "Invalid File types";
+            }
+        }
+
+
+
+//        if (in_array($_FILES['photo']['type'][$i],$file_types) != false){
+//            for ($i=0; $i < $totalfiles; $i++){
+//                move_uploaded_file($_FILES['photo']['tmp_name'][$i],"assets/upload/". $_FILES['photo']['name'][$i]);
+//            }
+//        }else{
+//            $error =  "Not a valid file type";
+//        }
+    }
+
+
+?>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" href="assets/css/normalize.css">
+    <link rel="stylesheet" href="assets/css/milligram.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        body{
+            margin-top: 30px;
+            font-size: 14px;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="column column-50 column-offset-25">
+            <h2>Welcome to HTTP Verb </h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus, error!</p>
+            <?php
+                $input_value = filter_input(INPUT_POST,'books',FILTER_SANITIZE_STRING,FILTER_REQUIRE_ARRAY);
+
+                if (isset($input_value) && count($input_value)>0){
+                    echo "You have selected: ".join(", ",$input_value);
+                }
+
+            ?>
+            <p style="color: #ff0000;"><?php echo $error; ?></p>
+            <form action="" method="POST" enctype="multipart/form-data">
+                <label for="book">Select Book</label>
+                <select name="books[]" id="book" multiple style="height: 300px;">
+                    <option value="" disabled selected>Select Book</option>
+                    <?php selectBook($books,$input_value); ?>
+                </select>
+                <input type="file" name="photo[]" id="photo"><br>
+                <input type="file" name="photo[]" id="photo"><br>
+                <input type="file" name="photo[]" id="photo"><br>
+                <input type="submit" value="Submit Now">
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
